@@ -14,18 +14,24 @@ fun TrailApp() {
 
     Surface(color = MaterialTheme.colors.background) {
         if (isWideScreen()) {
-            Row {
-                TrailList(trails) { trail -> selectedTrail.value = trail }
-                Spacer(modifier = Modifier.width(8.dp))
-                selectedTrail.value?.let {
-                    TrailDetails(it) {
-                        selectedTrail.value = null
+            Row(modifier = Modifier.fillMaxSize()) {
+                // Pierwsza kolumna dla listy szlaków
+                Column(modifier = Modifier.weight(1f)) {
+                    TrailList(trails, selectedTrail) { trail -> selectedTrail.value = trail }
+                }
+                // Druga kolumna dla szczegółów wybranego szlaku (jeśli istnieje)
+                selectedTrail.value?.let { trail ->
+                    Column(modifier = Modifier.weight(1f)) {
+                        TrailDetails(trail) {
+                            selectedTrail.value = null
+                        }
                     }
                 }
             }
         } else {
+            // Wyświetl listę szlaków lub szczegóły wybranego szlaku w zależności od wyboru użytkownika
             if (selectedTrail.value == null) {
-                TrailList(trails) { trail -> selectedTrail.value = trail }
+                TrailList(trails, selectedTrail) { trail -> selectedTrail.value = trail }
             } else {
                 TrailDetails(selectedTrail.value!!) {
                     selectedTrail.value = null
@@ -34,3 +40,6 @@ fun TrailApp() {
         }
     }
 }
+
+
+
