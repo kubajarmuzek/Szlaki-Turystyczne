@@ -15,11 +15,9 @@ fun TrailApp() {
     Surface(color = MaterialTheme.colors.background) {
         if (isWideScreen()) {
             Row(modifier = Modifier.fillMaxSize()) {
-                // Pierwsza kolumna dla listy szlaków
                 Column(modifier = Modifier.weight(1f)) {
                     TrailList(trails, selectedTrail) { trail -> selectedTrail.value = trail }
                 }
-                // Druga kolumna dla szczegółów wybranego szlaku (jeśli istnieje)
                 selectedTrail.value?.let { trail ->
                     Column(modifier = Modifier.weight(1f)) {
                         TrailDetails(trail) {
@@ -29,7 +27,6 @@ fun TrailApp() {
                 }
             }
         } else {
-            // Wyświetl listę szlaków lub szczegóły wybranego szlaku w zależności od wyboru użytkownika
             if (selectedTrail.value == null) {
                 TrailList(trails, selectedTrail) { trail -> selectedTrail.value = trail }
             } else {

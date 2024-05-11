@@ -15,7 +15,6 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun TrailList(trails: List<Trail>, selectedTrail: MutableState<Trail?>, onTrailSelected: (Trail) -> Unit) {
     Row(modifier = Modifier.fillMaxWidth()) {
-        // Pierwsza kolumna dla listy szlaków
         Column(modifier = Modifier.weight(1f)) {
             LazyColumn {
                 items(trails) { trail ->
