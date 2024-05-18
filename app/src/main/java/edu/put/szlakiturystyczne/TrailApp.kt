@@ -33,14 +33,24 @@ fun TrailApp() {
                     label = { Text("Home") }
                 )
                 BottomNavigationItem(
-                    selected = navController.currentDestination?.route == "details",
+                    selected = navController.currentDestination?.route == "tatry",
                     onClick = {
-                        navController.navigate("details") {
+                        navController.navigate("tatry") {
                             launchSingleTop = true
                         }
                     },
                     icon = { /* Details icon */ },
-                    label = { Text("Details") }
+                    label = { Text("Tatry") }
+                )
+                BottomNavigationItem(
+                    selected = navController.currentDestination?.route == "rest",
+                    onClick = {
+                        navController.navigate("rest") {
+                            launchSingleTop = true
+                        }
+                    },
+                    icon = { /* Details icon */ },
+                    label = { Text("Rest") }
                 )
             }
         }
@@ -53,11 +63,11 @@ fun TrailApp() {
                 composable("home") {
                     HomeScreen(navController = navController)
                 }
-                composable("details") {
+                composable("tatry") {
                     if (isWideScreen()) {
                         Row(modifier = Modifier.fillMaxSize()) {
                             Column(modifier = Modifier.weight(1f)) {
-                                TrailList(trails) { trail -> selectedTrail.value = trail }
+                                TrailList(trails,"Tatry") { trail -> selectedTrail.value = trail }
                             }
                             selectedTrail.value?.let { trail ->
                                 Column(modifier = Modifier.weight(1f)) {
@@ -69,7 +79,31 @@ fun TrailApp() {
                         }
                     } else {
                         if (selectedTrail.value == null) {
-                            TrailList(trails) { trail -> selectedTrail.value = trail }
+                            TrailList(trails,"Tatry") { trail -> selectedTrail.value = trail }
+                        } else {
+                            TrailDetails(selectedTrail.value!!) {
+                                selectedTrail.value = null
+                            }
+                        }
+                    }
+                }
+                composable("rest") {
+                    if (isWideScreen()) {
+                        Row(modifier = Modifier.fillMaxSize()) {
+                            Column(modifier = Modifier.weight(1f)) {
+                                TrailList(trails,"Rest") { trail -> selectedTrail.value = trail }
+                            }
+                            selectedTrail.value?.let { trail ->
+                                Column(modifier = Modifier.weight(1f)) {
+                                    TrailDetails(trail) {
+                                        selectedTrail.value = null
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        if (selectedTrail.value == null) {
+                            TrailList(trails,"Rest") { trail -> selectedTrail.value = trail }
                         } else {
                             TrailDetails(selectedTrail.value!!) {
                                 selectedTrail.value = null

@@ -9,12 +9,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun TrailList(trails: List<Trail>, onTrailSelected: (Trail) -> Unit) {
-    LazyColumn(modifier = Modifier.fillMaxSize()) {
-        items(trails.size) { index ->
-            TrailListItem(trail = trails[index], onTrailSelected = onTrailSelected)
-        }
-    }
+fun TrailList(trails: List<Trail>,type: String, onTrailSelected: (Trail) -> Unit) {
+    FilteredTrailList(trails = trails, type = type, onTrailSelected = onTrailSelected)
+
 }
 
 @Composable
@@ -31,3 +28,17 @@ fun TrailListItem(trail: Trail, onTrailSelected: (Trail) -> Unit) {
         }
     }
 }
+
+@Composable
+fun FilteredTrailList(trails: List<Trail>, type: String, onTrailSelected: (Trail) -> Unit) {
+    val filteredTrails = remember(trails, type) {
+        trails.filter { it.type == type }
+    }
+
+    LazyColumn(modifier = Modifier.fillMaxSize()) {
+        items(filteredTrails.size) { index ->
+            TrailListItem(trail = filteredTrails[index], onTrailSelected = onTrailSelected)
+        }
+    }
+}
+

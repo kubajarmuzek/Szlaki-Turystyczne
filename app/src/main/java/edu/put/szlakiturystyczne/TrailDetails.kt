@@ -65,11 +65,11 @@ enum class Pace {
 
 fun calculateEstimatedTime(distance: Float, pace: Pace): String {
     val paceFactor = when (pace) {
-        Pace.POWOLI -> 5f
-        Pace.NORMALNIE -> 4f
-        Pace.SZYBKO -> 3f
+        Pace.POWOLI -> 3f
+        Pace.NORMALNIE -> 5f
+        Pace.SZYBKO -> 6f
     }
-    val timeInMinutes = distance * paceFactor * 60
+    val timeInMinutes = distance / paceFactor * 60
     val hours = timeInMinutes.toInt() / 60
     val minutes = timeInMinutes.toInt() % 60
     return String.format("%02d:%02d", hours, minutes)
@@ -77,11 +77,11 @@ fun calculateEstimatedTime(distance: Float, pace: Pace): String {
 
 fun calculateEstimatedTimeMillis(distance: Float, pace: Pace): Long {
     val paceFactor = when (pace) {
-        Pace.POWOLI -> 5f
-        Pace.NORMALNIE -> 4f
-        Pace.SZYBKO -> 3f
+        Pace.POWOLI -> 3f
+        Pace.NORMALNIE -> 5f
+        Pace.SZYBKO -> 6f
     }
-    return (distance * paceFactor * 60 * 60 * 1000).toLong()
+    return (distance / paceFactor * 60 * 60 * 1000).toLong()
 }
 
 @Composable
