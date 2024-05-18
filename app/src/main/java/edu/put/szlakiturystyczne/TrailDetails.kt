@@ -6,19 +6,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.sp
+import androidx.compose.foundation.rememberScrollState
 
 @Composable
 fun TrailDetails(trail: Trail, onBackClicked: () -> Unit) {
@@ -35,9 +24,9 @@ fun TrailDetails(trail: Trail, onBackClicked: () -> Unit) {
         Text(text = "Opis: ${trail.description}", style = MaterialTheme.typography.body1)
         Spacer(modifier = Modifier.height(16.dp))
         Stopwatch()
-        for (stage in trail.stages) {
+        trail.stages.forEach { stage ->
             val estimatedTimeMillis = calculateEstimatedTimeMillis(stage.distance, selectedPace)
-            val estimatedTime = calculateEstimatedTime(stage.distance,selectedPace)
+            val estimatedTime = calculateEstimatedTime(stage.distance, selectedPace)
             StageItem(stage = stage, estimatedTime = estimatedTime) {
                 activeStage = stage.id
             }
@@ -59,14 +48,14 @@ fun StageItem(stage: Stage, estimatedTime: String, onStartClicked: () -> Unit) {
     Column {
         Text(text = "Odcinek: ${stage.name}", style = MaterialTheme.typography.body1)
         Text(text = "Długość: ${stage.distance} km", style = MaterialTheme.typography.body2)
-        Row{Text(text = "Szacowany czas przejścia: ${estimatedTime}", style = MaterialTheme.typography.body2)
+        Row {
+            Text(text = "Szacowany czas przejścia: $estimatedTime", style = MaterialTheme.typography.body2)
             Spacer(modifier = Modifier.width(8.dp))
-
             Button(onClick = onStartClicked) {
                 Text(text = "Stoper", style = MaterialTheme.typography.body2)
-            }}
+            }
+        }
         Spacer(modifier = Modifier.height(8.dp))
-
     }
 }
 
@@ -76,36 +65,38 @@ enum class Pace {
 
 fun calculateEstimatedTime(distance: Float, pace: Pace): String {
     val paceFactor = when (pace) {
-        Pace.POWOLI -> 0.8f
-        Pace.NORMALNIE -> 1.0f
-        Pace.SZYBKO -> 1.2f
+        Pace.POWOLI -> 5f
+        Pace.NORMALNIE -> 4f
+        Pace.SZYBKO -> 3f
     }
-    val estimatedTime = distance / paceFactor
-    return "${String.format("%.1f", estimatedTime)} godzin"
+    val timeInMinutes = distance * paceFactor * 60
+    val hours = timeInMinutes.toInt() / 60
+    val minutes = timeInMinutes.toInt() % 60
+    return String.format("%02d:%02d", hours, minutes)
+}
+
+fun calculateEstimatedTimeMillis(distance: Float, pace: Pace): Long {
+    val paceFactor = when (pace) {
+        Pace.POWOLI -> 5f
+        Pace.NORMALNIE -> 4f
+        Pace.SZYBKO -> 3f
+    }
+    return (distance * paceFactor * 60 * 60 * 1000).toLong()
 }
 
 @Composable
 fun PaceSelector(selectedPace: Pace, onPaceSelected: (Pace) -> Unit) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        Text("Tempo:", style = MaterialTheme.typography.subtitle1, fontSize = 12.sp)
-        Spacer(modifier = Modifier.width(1.dp))
-        Pace.values().forEach { pace ->
-            RadioButton(
-                selected = selectedPace == pace,
-                onClick = { onPaceSelected(pace) },
-                modifier = Modifier.padding(end = 1.dp)
-            )
-            Text(pace.name, style = MaterialTheme.typography.body2, fontSize = 12.sp)
+    Column {
+        Text(text = "Wybierz tempo:", style = MaterialTheme.typography.h6)
+        Row {
+            Pace.values().forEach { pace ->
+                Button(
+                    onClick = { onPaceSelected(pace) },
+                    modifier = Modifier.padding(8.dp)
+                ) {
+                    Text(text = pace.name)
+                }
+            }
         }
     }
 }
-fun calculateEstimatedTimeMillis(distance: Float, pace: Pace): Long {
-    val paceFactor = when (pace) {
-        Pace.POWOLI -> 0.8f
-        Pace.NORMALNIE -> 1.0f
-        Pace.SZYBKO -> 1.2f
-    }
-    val estimatedTime = distance / paceFactor * 3600000 // Convert hours to milliseconds
-    return estimatedTime.toLong()
-}
-

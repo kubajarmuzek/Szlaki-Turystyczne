@@ -16,7 +16,7 @@ fun TrailApp() {
         if (isWideScreen()) {
             Row(modifier = Modifier.fillMaxSize()) {
                 Column(modifier = Modifier.weight(1f)) {
-                    TrailList(trails, selectedTrail) { trail -> selectedTrail.value = trail }
+                    TrailList(trails) { trail -> selectedTrail.value = trail }
                 }
                 selectedTrail.value?.let { trail ->
                     Column(modifier = Modifier.weight(1f)) {
@@ -28,7 +28,7 @@ fun TrailApp() {
             }
         } else {
             if (selectedTrail.value == null) {
-                TrailList(trails, selectedTrail) { trail -> selectedTrail.value = trail }
+                TrailList(trails) { trail -> selectedTrail.value = trail }
             } else {
                 TrailDetails(selectedTrail.value!!) {
                     selectedTrail.value = null
@@ -37,6 +37,3 @@ fun TrailApp() {
         }
     }
 }
-
-
-

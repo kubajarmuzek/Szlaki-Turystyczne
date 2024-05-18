@@ -11,8 +11,8 @@ import kotlinx.coroutines.*
 import java.util.concurrent.TimeUnit
 
 @Composable
-fun Stopwatch() {
-    var elapsedTime by remember { mutableStateOf(0L) }
+fun CountdownTimer(estimatedTimeMillis: Long) {
+    var remainingTime by remember { mutableStateOf(estimatedTimeMillis) }
     var isRunning by remember { mutableStateOf(false) }
     var timerJob by remember { mutableStateOf<Job?>(null) }
 
@@ -23,14 +23,14 @@ fun Stopwatch() {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = formatTime(elapsedTime),
+            text = formatTime(remainingTime),
             modifier = Modifier.padding(bottom = 16.dp)
         )
         Row(horizontalArrangement = Arrangement.SpaceEvenly) {
             Button(onClick = {
                 if (!isRunning) {
-                    timerJob = startStopwatchTimer(elapsedTime) { updatedTime ->
-                        elapsedTime = updatedTime
+                    timerJob = startCountdownTimer(remainingTime) { updatedTime ->
+                        remainingTime = updatedTime
                     }
                     isRunning = true
                 }
@@ -50,7 +50,7 @@ fun Stopwatch() {
             Button(onClick = {
                 timerJob?.cancel()
                 isRunning = false
-                elapsedTime = 0
+                remainingTime = estimatedTimeMillis
             }) {
                 Text(text = "Reset")
             }
@@ -58,14 +58,14 @@ fun Stopwatch() {
     }
 }
 
-private fun startStopwatchTimer(initialTime: Long, onUpdate: (Long) -> Unit): Job {
+private fun startCountdownTimer(initialTime: Long, onUpdate: (Long) -> Unit): Job {
     return CoroutineScope(Dispatchers.Default).launch {
-        var elapsedTime = initialTime
-        while (true) {
+        var remainingTime = initialTime
+        while (remainingTime > 0) {
             delay(1000)
-            elapsedTime += 1000
+            remainingTime -= 1000
             withContext(Dispatchers.Main) {
-                onUpdate(elapsedTime)
+                onUpdate(remainingTime)
             }
         }
     }
