@@ -3,6 +3,7 @@ package edu.put.szlakiturystyczne
 import androidx.compose.material.Surface
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -71,7 +72,7 @@ fun TrailApp() {
                             }
                             selectedTrail.value?.let { trail ->
                                 Column(modifier = Modifier.weight(1f)) {
-                                    TrailDetails(trail) {
+                                    TrailDetails(trail,filter = "Tatry") {
                                         selectedTrail.value = null
                                     }
                                 }
@@ -81,7 +82,7 @@ fun TrailApp() {
                         if (selectedTrail.value == null) {
                             TrailList(trails,"Tatry") { trail -> selectedTrail.value = trail }
                         } else {
-                            TrailDetails(selectedTrail.value!!) {
+                            TrailDetails(selectedTrail.value!!,filter = "Tatry") {
                                 selectedTrail.value = null
                             }
                         }
@@ -95,7 +96,7 @@ fun TrailApp() {
                             }
                             selectedTrail.value?.let { trail ->
                                 Column(modifier = Modifier.weight(1f)) {
-                                    TrailDetails(trail) {
+                                    TrailDetails(trail,filter = "Rest") {
                                         selectedTrail.value = null
                                     }
                                 }
@@ -105,7 +106,7 @@ fun TrailApp() {
                         if (selectedTrail.value == null) {
                             TrailList(trails,"Rest") { trail -> selectedTrail.value = trail }
                         } else {
-                            TrailDetails(selectedTrail.value!!) {
+                            TrailDetails(selectedTrail.value!!,filter = "Rest") {
                                 selectedTrail.value = null
                             }
                         }

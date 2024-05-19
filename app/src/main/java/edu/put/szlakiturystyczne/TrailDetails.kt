@@ -8,40 +8,101 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 
 @Composable
-fun TrailDetails(trail: Trail, onBackClicked: () -> Unit) {
+fun TrailDetails(trail: Trail,filter:String, onBackClicked: () -> Unit) {
     var selectedPace by remember { mutableStateOf(Pace.NORMALNIE) }
     var activeStage by remember { mutableStateOf<Int?>(null) }
+    var factShown by remember { mutableStateOf(false) }
+    var dialogDismissed by remember { mutableStateOf(false) }
 
-    Column(
-        modifier = Modifier
-            .padding(16.dp)
-            .verticalScroll(rememberScrollState())
-    ) {
-        Text(text = trail.name, style = MaterialTheme.typography.h4)
-        Spacer(modifier = Modifier.height(16.dp))
-        Text(text = "Opis: ${trail.description}", style = MaterialTheme.typography.body1)
-        Spacer(modifier = Modifier.height(16.dp))
-        Stopwatch()
-        trail.stages.forEach { stage ->
-            val estimatedTimeMillis = calculateEstimatedTimeMillis(stage.distance, selectedPace)
-            val estimatedTime = calculateEstimatedTime(stage.distance, selectedPace)
-            StageItem(stage = stage, estimatedTime = estimatedTime) {
-                activeStage = stage.id
+    Scaffold(
+        floatingActionButton = {
+            FloatingActionButton(onClick = { factShown = true }) {
+                Icon(Icons.Filled.Add, contentDescription = "Add")
             }
-            if (activeStage == stage.id) {
-                CountdownTimer(estimatedTimeMillis)
+        },
+        content = { padding ->
+            Column(
+                modifier = Modifier
+                    .padding(padding)
+                    .padding(16.dp)
+                    .verticalScroll(rememberScrollState())
+            ) {
+                Text(text = trail.name, style = MaterialTheme.typography.h4)
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(text = "Opis: ${trail.description}", style = MaterialTheme.typography.body1)
+                Spacer(modifier = Modifier.height(16.dp))
+                Stopwatch()
+                trail.stages.forEach { stage ->
+                    val estimatedTimeMillis = calculateEstimatedTimeMillis(stage.distance, selectedPace)
+                    val estimatedTime = calculateEstimatedTime(stage.distance, selectedPace)
+                    StageItem(stage = stage, estimatedTime = estimatedTime) {
+                        activeStage = stage.id
+                    }
+                    if (activeStage == stage.id) {
+                        CountdownTimer(estimatedTimeMillis)
+                    }
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+                PaceSelector(selectedPace = selectedPace, onPaceSelected = { selectedPace = it })
+                Spacer(modifier = Modifier.height(32.dp))
+                Button(onClick = onBackClicked) {
+                    Text("Wróć do listy")
+                }
+
+                if (factShown && !dialogDismissed) {
+                    AlertDialog(
+                        onDismissRequest = {
+                            dialogDismissed = true
+                            factShown = false
+                        },
+                        title = { Text(text = "Ciekawostka") },
+                        text = { Text(text = getRandomFact(filter)) },
+                        confirmButton = {
+                            Button(onClick = {
+                                dialogDismissed = true
+                                factShown = false
+                            }) {
+                                Text(text = "OK")
+                            }
+                        }
+                    )
+                }
             }
         }
-        Spacer(modifier = Modifier.height(16.dp))
-        PaceSelector(selectedPace = selectedPace, onPaceSelected = { selectedPace = it })
-        Spacer(modifier = Modifier.height(32.dp))
-        Button(onClick = onBackClicked) {
-            Text("Wróć do listy")
-        }
+    )
+}
+
+@Composable
+private fun getRandomFact(filter: String): String {
+    val tatryFacts = remember {
+        listOf(
+            "Tatry to najwyższe pasmo górskie w Polsce.",
+            "W Tatrach znajduje się wiele jaskiń, w tym jaskinia Wielka Śnieżna.",
+            "Najwyższym szczytem Tatr jest Gerlach (2655 m n.p.m.)."
+        )
+    }
+
+    val otherFacts = remember {
+        listOf(
+            "Beskidy to pasmo górskie w Polsce i Czechach.",
+            "W Sudetach znajduje się wiele pięknych wodospadów, takich jak Wodospad Kamieńczyka.",
+            "Bieszczady słyną z dzikiej przyrody i niezwykłych widoków."
+        )
+    }
+
+    if (filter == "Tatry") {
+        return tatryFacts.random()
+    }
+    else {
+        return otherFacts.random()
     }
 }
+
+
 
 @Composable
 fun StageItem(stage: Stage, estimatedTime: String, onStartClicked: () -> Unit) {
