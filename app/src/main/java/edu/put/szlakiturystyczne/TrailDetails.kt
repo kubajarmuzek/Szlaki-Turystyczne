@@ -1,5 +1,6 @@
 package edu.put.szlakiturystyczne
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -10,9 +11,10 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.navigation.NavController
 
 @Composable
-fun TrailDetails(trail: Trail,filter:String, onBackClicked: () -> Unit) {
+fun TrailDetails(trail: Trail, filter:String, navController: NavController, onBackClicked: () -> Unit) {
     var selectedPace by remember { mutableStateOf(Pace.NORMALNIE) }
     var activeStage by remember { mutableStateOf<Int?>(null) }
     var factShown by remember { mutableStateOf(false) }
@@ -74,6 +76,11 @@ fun TrailDetails(trail: Trail,filter:String, onBackClicked: () -> Unit) {
             }
         }
     )
+
+    BackHandler(onBack = {
+        onBackClicked()
+        navController.popBackStack()
+    })
 }
 
 @Composable

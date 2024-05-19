@@ -68,21 +68,25 @@ fun TrailApp() {
                     if (isWideScreen()) {
                         Row(modifier = Modifier.fillMaxSize()) {
                             Column(modifier = Modifier.weight(1f)) {
-                                TrailList(trails,"Tatry") { trail -> selectedTrail.value = trail }
+                                TrailList(trails,"Tatry") { trail ->
+                                    navController.navigate("details/${trail.name}")
+                                }
                             }
                             selectedTrail.value?.let { trail ->
                                 Column(modifier = Modifier.weight(1f)) {
-                                    TrailDetails(trail,filter = "Tatry") {
+                                    TrailDetails(trail,filter = "Tatry", navController) {
                                         selectedTrail.value = null
                                     }
                                 }
                             }
                         }
                     } else {
-                        if (selectedTrail.value == null) {
-                            TrailList(trails,"Tatry") { trail -> selectedTrail.value = trail }
+                        if (true || selectedTrail.value == null) {
+                            TrailList(trails,"Tatry") { trail ->
+                                navController.navigate("details/${trail.name}")
+                            }
                         } else {
-                            TrailDetails(selectedTrail.value!!,filter = "Tatry") {
+                            TrailDetails(selectedTrail.value!!,filter = "Tatry",navController) {
                                 selectedTrail.value = null
                             }
                         }
@@ -92,24 +96,37 @@ fun TrailApp() {
                     if (isWideScreen()) {
                         Row(modifier = Modifier.fillMaxSize()) {
                             Column(modifier = Modifier.weight(1f)) {
-                                TrailList(trails,"Rest") { trail -> selectedTrail.value = trail }
+                                TrailList(trails,"Rest") { trail ->
+                                    navController.navigate("details/${trail.name}")
+                                }
                             }
                             selectedTrail.value?.let { trail ->
                                 Column(modifier = Modifier.weight(1f)) {
-                                    TrailDetails(trail,filter = "Rest") {
+                                    TrailDetails(trail,filter = "Rest",navController) {
                                         selectedTrail.value = null
                                     }
                                 }
                             }
                         }
                     } else {
-                        if (selectedTrail.value == null) {
-                            TrailList(trails,"Rest") { trail -> selectedTrail.value = trail }
+                        if (true || selectedTrail.value == null) {
+                            TrailList(trails,"Rest") {  trail ->
+                                navController.navigate("details/${trail.name}")
+                             }
                         } else {
-                            TrailDetails(selectedTrail.value!!,filter = "Rest") {
+                            TrailDetails(selectedTrail.value!!,filter = "Rest",navController) {
                                 selectedTrail.value = null
                             }
                         }
+                    }
+                }
+                composable("details/{trailName}") { backStackEntry ->
+                    val trailName = backStackEntry.arguments?.getString("trailName")
+                    val trail = trails.find { it.name == trailName }
+                    if (trail != null) {
+                        TrailDetailsScreen(trail = trail, filter = "Tatry", navController = navController)
+                    } else {
+                        // Handle case where trail is not found
                     }
                 }
             }
