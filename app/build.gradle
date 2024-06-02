@@ -84,4 +84,6 @@ dependencies {
     debugImplementation 'androidx.compose.ui:ui-tooling'
     debugImplementation 'androidx.compose.ui:ui-test-manifest'
     implementation "androidx.compose.material:material-icons-core:1.2.0"
+    implementation "com.google.accompanist:accompanist-pager:0.24.13-rc"
+    implementation "com.google.accompanist:accompanist-pager-indicators:0.24.13-rc"
 }

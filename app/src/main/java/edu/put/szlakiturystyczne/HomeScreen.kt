@@ -24,12 +24,6 @@ fun HomeScreen(navController: NavHostController) {
     ) {
         Greeting()
         Description()
-        CategoryCard(title = "Tatry Trails") {
-            navController.navigate("tatry")
-        }
-        CategoryCard(title = "Other Trails") {
-            navController.navigate("rest")
-        }
     }
 }
 
